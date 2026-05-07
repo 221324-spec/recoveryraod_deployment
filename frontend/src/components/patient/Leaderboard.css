@@ -1,0 +1,37 @@
+.leaderboard-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: #f9fbfd;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.leaderboard-title {
+  text-align: center;
+  color: #004080;
+  margin-bottom: 1.5rem;
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.leaderboard-table th {
+  background: #004080;
+  color: white;
+}
+
+.leaderboard-table tr:nth-child(even) {
+  background: #eef4ff;
+}
+

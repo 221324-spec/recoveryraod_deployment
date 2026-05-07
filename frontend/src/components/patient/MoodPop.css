@@ -1,0 +1,159 @@
+.moodpop-container {
+  text-align: center;
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.stats {
+  margin-top: 10px;
+  font-size: 1.2rem;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.bubble-area {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.bubble {
+  width: 50px;
+  height: 70px; /* Taller to look like a balloon */
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* Balloon shape */
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+/* Balloon string */
+.bubble::after {
+  content: "";
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  width: 2px;
+  height: 20px;
+  background-color: #666;
+  transform: translateX(-50%);
+}
+
+/* Shine effect on balloon */
+.bubble::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 10px;
+  height: 15px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+}
+
+.bubble.green {
+  background-color: #4caf50;
+}
+
+.bubble.red {
+  background-color: #f44336;
+}
+
+.bubble:hover {
+  transform: scale(1.1);
+}
+
+/* Popping animation when red is clicked */
+.bubble.popped {
+  animation: pop-out 0.3s forwards ease-out;
+}
+
+/* Popped keyframes */
+@keyframes pop-out {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+}
+
+/* Badge styling */
+.badge {
+  margin-top: 20px;
+  font-size: 1.5rem;
+  color: #ff9800;
+  font-weight: bold;
+}
+
+/* Game Over or Win Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+/* Centered message box for Game Over or Win */
+.message-box {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 300px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  animation: pop 0.4s ease-in-out;
+}
+
+.message-box h2 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.message-box p {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.message-box button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.message-box button:hover {
+  background-color: #45a049;
+}
+
+/* Animation for pop-up message box */
+@keyframes pop {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Goal display text */
+.goal {
+  font-size: 1.1rem;
+  color: #444;
+  margin: 10px 0 15px;
+}

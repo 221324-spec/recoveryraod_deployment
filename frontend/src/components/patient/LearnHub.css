@@ -1,0 +1,57 @@
+/* LearnHub.css */
+.learnhub-container {
+  background: linear-gradient(to right, #f0f9ff, #ecfdf5);
+  min-height: 100vh;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.learnhub-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #0f172a;
+  margin-bottom: 10px;
+}
+
+.learnhub-subtitle {
+  font-size: 1.2rem;
+  color: #334155;
+  margin-bottom: 30px;
+}
+
+.learnhub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.learnhub-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  color: #1e293b;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.learnhub-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.learnhub-card h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  color: #0ea5e9;
+}
+
+.learnhub-card p {
+  font-size: 0.95rem;
+  color: #475569;
+}

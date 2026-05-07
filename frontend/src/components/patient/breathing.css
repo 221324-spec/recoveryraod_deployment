@@ -1,0 +1,343 @@
+.breathing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh;
+  background: linear-gradient(to bottom right, #a2c4fc, #e0f7fa);
+  font-family: "Segoe UI", sans-serif;
+  text-align: center;
+  padding: 20px;
+}
+
+.breathing-title {
+  font-size: 2.2rem;
+  color: #003366;
+  margin-bottom: 30px;
+}
+
+.start-btn, .stop-btn {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.start-btn {
+  background-color: #0066cc;
+  color: white;
+}
+
+.start-btn:hover {
+  background-color: #004c99;
+}
+
+.stop-btn {
+  background-color: #cc3300;
+  color: white;
+  margin-top: 20px;
+}
+
+.stop-btn:hover {
+  background-color: #992600;
+}
+
+.breathing-circle {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background-color: rgba(0, 102, 204, 0.2);
+  margin: 30px 0;
+  transition: all 4s ease-in-out;
+}
+
+.grow {
+  transform: scale(1.5);
+  background-color: rgba(0, 102, 204, 0.4);
+}
+
+.shrink {
+  transform: scale(1);
+}
+
+.phase-text {
+  font-size: 1.8rem;
+  color: #003366;
+  margin-bottom: 10px;
+}
+
+.timer-text {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.complete-message h3 {
+  font-size: 1.8rem;
+  color: #006633;
+  margin-top: 20px;
+}
+
+.complete-message p {
+  font-size: 1.2rem;
+  color: #444;
+}
+.breath-count {
+  font-size: 18px;
+  margin-top: 10px;
+  color: #333;
+  font-weight: bold;
+}
+
+.resume-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.resume-btn:hover {
+  background-color: #45a049;
+}
+
+.time-select {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.choose-text {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.time-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.start-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  border: none;
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.start-btn:hover {
+  background-color: #45a049;
+}
+
+.stop-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #f44336;
+  border: none;
+  color: white;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.stop-btn:hover {
+  background-color: #e53935;
+}
+/* breathing.css */
+
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(to bottom, #a0c4ff, #caffbf);
+}
+
+.breathing-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: inherit;
+  padding-bottom: 2rem;
+}
+
+.music-toggle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+  gap: 12px;
+}
+
+.toggle-label {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.toggle-label input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+.toggle-label input:checked + .slider {
+  background-color: #4caf50;
+}
+
+.toggle-label input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.music-label {
+  font-size: 14px;
+  color: #333;
+}
+
+
+.breathing-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #6dd5ed, #2193b0);
+  margin: 20px auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.grow {
+  animation: growAnim 4s forwards; /* ✅ stays expanded after 4s */
+}
+
+.shrink {
+  animation: shrinkAnim 8s forwards; /* ✅ shrinks slowly and stays */
+}
+
+@keyframes growAnim {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.5);
+  }
+}
+
+@keyframes shrinkAnim {
+  from {
+    transform: scale(1.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Square container */
+.square-container {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 20px auto;
+  border: 3px solid #0c0c0c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  overflow: visible;
+}
+
+/* Circle wrapper (rotates around square edges) */
+.circle-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+  animation: moveAround 20s linear infinite; /* ✅ Circle also moves */
+}
+
+/* Circle itself (still grows/shrinks for breathing) */
+.breathing-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #6dd5ed, #2193b0);
+  margin: 20px auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.grow {
+  animation: growAnim 4s forwards; /* ✅ stays expanded after 4s */
+}
+
+.shrink {
+  animation: shrinkAnim 8s forwards; /* ✅ shrinks slowly and stays */
+}
+
+@keyframes growAnim {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.5);
+  }
+}
+
+@keyframes shrinkAnim {
+  from {
+    transform: scale(1.5);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.moving-ball {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: #2193b0;
+  border-radius: 50%;
+  /* ✅ Make the ball ride the border */
+  animation: moveOnEdges 12s linear infinite;
+}
+
+@keyframes moveOnEdges {
+  0%   { top: -10px; left: -10px; } /* top-left corner */
+  25%  { top: -10px; left: calc(100% - 10px); } /* top-right */
+  50%  { top: calc(100% - 10px); left: calc(100% - 10px); } /* bottom-right */
+  75%  { top: calc(100% - 10px); left: -10px; } /* bottom-left */
+  100% { top: -10px; left: -10px; } /* back to top-left */
+}
+

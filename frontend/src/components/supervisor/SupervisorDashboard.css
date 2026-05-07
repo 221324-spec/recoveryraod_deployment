@@ -1,0 +1,96 @@
+/* SupervisorDashboard.css - White sidebar styling matching admin portal */
+
+/* Lock the supervisor shell to the viewport — no overscroll at all */
+.supervisor-dashboard {
+  color: #0f172a;
+  overscroll-behavior: none;
+}
+
+html:has(.supervisor-dashboard),
+body:has(.supervisor-dashboard) {
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+}
+
+/* Keep gray label text dark enough for solid contrast in main content (not sidebar). */
+.supervisor-dashboard main .text-gray-700,
+.supervisor-dashboard main .text-gray-800,
+.supervisor-dashboard main .text-gray-900 {
+  color: #0f172a !important;
+}
+
+.supervisor-dashboard main .text-gray-500,
+.supervisor-dashboard main .text-gray-600 {
+  color: #475569 !important;
+}
+
+/* White sidebar */
+.supervisor-dashboard aside {
+  background: #ffffff !important;
+  border-right: 1px solid #e5e7eb !important;
+}
+
+/* Active nav item with blue gradient */
+.supervisor-dashboard aside nav button[class*="from-blue-600"] {
+  background-image: linear-gradient(to right, #2563eb, #1d4ed8) !important;
+  color: #ffffff !important;
+}
+
+.supervisor-dashboard aside nav button[class*="from-blue-600"] * {
+  color: #ffffff !important;
+}
+
+/* Active section parent highlight */
+.supervisor-dashboard aside nav button[class*="bg-blue-50"] {
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+.supervisor-dashboard aside nav button[class*="bg-blue-50"] .text-blue-600 {
+  color: #2563eb !important;
+}
+
+/* Sidebar text: let Tailwind utilities control text color */
+.supervisor-dashboard aside,
+.supervisor-dashboard aside div,
+.supervisor-dashboard aside span,
+.supervisor-dashboard aside p {
+  color: inherit;
+}
+
+/* Active sub-items */
+.supervisor-dashboard aside nav a.text-blue-700 {
+  color: #1d4ed8 !important;
+  background-color: #eff6ff !important;
+  font-weight: 600 !important;
+}
+
+/* Inactive sub-items */
+.supervisor-dashboard aside nav a.text-gray-500 {
+  color: #6b7280 !important;
+}
+
+.supervisor-dashboard aside nav a.text-gray-500:hover {
+  color: #1d4ed8 !important;
+  background-color: #eff6ff !important;
+}
+
+/* Neutralize green/emerald/teal styles inside the supervisor dashboard */
+.supervisor-dashboard [class*="bg-green"],
+.supervisor-dashboard [class*="from-green"],
+.supervisor-dashboard [class*="to-green"],
+.supervisor-dashboard [class*="border-green"],
+.supervisor-dashboard [class*="bg-emerald"],
+.supervisor-dashboard [class*="from-emerald"],
+.supervisor-dashboard [class*="to-emerald"],
+.supervisor-dashboard [class*="text-emerald"],
+.supervisor-dashboard [class*="bg-teal"],
+.supervisor-dashboard [class*="text-teal"] {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+}
+
+.supervisor-dashboard [class*="text-green"] {
+  color: #0ea5e9 !important;
+}

@@ -1,0 +1,188 @@
+/* components/MemoryGame.css */
+.memory-container {
+  text-align: center;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+   background: linear-gradient(to bottom right, #a2c4fc, #e0f7fa);
+  min-height: 100vh;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 10px;
+  justify-content: center;
+  margin-top: 30px;
+}
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px; /* reduce spacing between cards */
+  max-width: 440px; /* limits total width of the grid */
+  margin: 20px auto; /* centers the grid */
+  padding: 0;
+}
+
+@media (max-width: 768px) {
+  .card-grid {
+    gap: 8px;
+  }
+}
+
+@media (min-width: 769px) {
+  .card-grid {
+    gap: 10px;
+  }
+}
+
+
+.moves {
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.card-grid {
+  display: grid;
+  gap: 1rem;
+  margin-top: 20px;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.win-screen {
+  font-size: 1.5rem;
+  color: green;
+  margin: 10px 0;
+  font-weight: bold;
+}
+.control-panel {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  background: linear-gradient(to right, #f0f4f8, #e6ecf3);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  width: fit-content;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.control-panel label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+.control-panel select,
+.control-panel button {
+  padding: 8px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.control-panel select:hover,
+.control-panel button:hover {
+  border-color: #007BFF;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+.control-panel button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+}
+
+.control-panel button:hover {
+  background-color: #0056b3;
+}
+.control-panel {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  background: linear-gradient(to right, #f0f4f8, #e6ecf3);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  width: fit-content;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.control-panel label {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+.control-panel select,
+.control-panel button {
+  padding: 8px 14px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.control-panel select:hover,
+.control-panel button:hover {
+  border-color: #007BFF;
+  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
+}
+
+.control-panel button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+}
+
+.control-panel button:hover {
+  background-color: #0056b3;
+}
+.game-stats {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+}
+
+.game-stats div {
+  background-color: #f0f4ff;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.game-stats {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 10px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.win-screen {
+  margin: 15px auto;
+  background-color: #e8fce8;
+  border: 2px solid #91d891;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+  color: #226622;
+}

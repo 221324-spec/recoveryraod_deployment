@@ -1,0 +1,6 @@
+/* All four dashboards (Admin / Supervisor / NGO / Patient) now use a unified
+   white-sidebar style defined in their respective CSS files.
+
+   This file is intentionally minimal so it does not conflict with those
+   styles. Do NOT add `.admin-dashboard`, `.supervisor-dashboard`,
+   `.ngo-dashboard`, or `.patient-dashboard` selectors back here. */

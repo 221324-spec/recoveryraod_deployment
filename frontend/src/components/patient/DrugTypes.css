@@ -1,0 +1,47 @@
+.drug-types-layout {
+  background: #ffffff; /* ✅ White background */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ Grid for cards */
+.dashboard-cards {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* ✅ Drug card with neon blue glow */
+.drug-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 40px;
+  width: 250px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #1f2937;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease, text-shadow 0.2s ease;
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+  border: 2px solid rgba(37, 99, 235, 0.4);
+}
+
+.drug-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.7), 0 0 40px rgba(37, 99, 235, 0.4);
+  border: 2px solid rgba(37, 99, 235, 0.8);
+  color: #2563eb;
+  text-shadow: 0 0 8px rgba(37, 99, 235, 0.7);
+}
+
+.drug-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+}

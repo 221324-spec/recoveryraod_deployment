@@ -1,0 +1,524 @@
+/* Container */
+.goals-container {
+  max-width: 1050px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: "Inter", sans-serif;
+}
+
+.header-title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: 700;
+  color: #1a237e;
+  margin-bottom: 25px;
+}
+
+/* Alert message */
+.alert {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  text-align: center;
+}
+.alert.success {
+  background: #d9f7e3;
+  color: #1e7b3a;
+}
+.alert.error {
+  background: #fde2e2;
+  color: #b71c1c;
+}
+
+/* Grid Layout */
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 25px;
+}
+
+/* Goal Card */
+.goal-card-new {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  transition: transform 0.2s;
+}
+.goal-card-new:hover {
+  transform: translateY(-4px);
+}
+.border-danger {
+  border: 2px solid #e53935;
+}
+
+/* Top Section */
+.goal-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.goal-title-new {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2a2a2a;
+}
+
+.goal-meta {
+  color: #777;
+  font-size: 14px;
+  margin-top: 3px;
+}
+
+.goal-date {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: #e3f2fd;
+  color: #1a73e8;
+}
+.goal-date.overdue {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+/* Progress Section */
+.progress-section {
+  margin-top: 15px;
+}
+.progress-bar-wrapper {
+  width: 100%;
+  height: 10px;
+  background: #e0e0e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.progress-fill-new {
+  height: 100%;
+  background: linear-gradient(90deg, #3f51b5, #1a73e8);
+  transition: width 0.4s ease-in-out;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.progress-percent { color: #1a237e; }
+.progress-status { color: #616161; }
+
+.updated-text {
+  margin-top: 5px;
+  font-size: 13px;
+  color: #777;
+}
+
+/* Update User Section */
+.range-slider {
+  width: 100%;
+  margin: 15px 0;
+}
+
+.note-field {
+  width: 100%;
+  resize: none;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #bbb;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+
+.btn-update {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #1a73e8;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+.btn-update:hover {
+  background: #1559c7;
+}
+.btn-update:disabled {
+  background: #a0a0a0;
+  cursor: not-allowed;
+}
+
+/* History Section */
+.history-wrapper {
+  margin-top: 15px;
+}
+.history-toggle {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  background: #eeeeee;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.history-toggle:hover {
+  background: #e0e0e0;
+}
+
+.history-content {
+  margin-top: 10px;
+  background: #fafafa;
+  padding: 10px;
+  border-radius: 8px;
+}
+.history-row {
+  display: grid;
+  grid-template-columns: 110px 60px 1fr;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+}
+.history-progress { font-weight: 600; }
+.history-note { color: #555; }
+
+
+body, html, #root {
+  background: #feffff !important;
+  margin: 0;
+  padding: 0;
+}
+/* Milestones */
+.milestones-wrapper {
+  margin-top: 18px;
+}
+
+.milestone-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.milestone-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #f5f7fa;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.milestone-item:hover {
+  background: #e3f2fd;
+}
+
+.milestone-item.done {
+  background: #e8f5e9;
+  text-decoration: line-through;
+  color: #2e7d32;
+  cursor: default;
+}
+
+.milestone-check {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.milestone-text {
+  flex: 1;
+}
+
+.ms-loading {
+  font-size: 12px;
+  color: #777;
+}
+
+.empty-text {
+  font-size: 14px;
+  color: #777;
+}
+/* Kanban Milestones */
+.milestones-wrapper-kanban {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.milestone-item-kanban {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-radius: 10px;
+  background: #f5f7fa;
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.milestone-item-kanban:hover {
+  background: #e3f2fd;
+}
+
+.milestone-item-kanban.done {
+  background: #e8f5e9;
+  text-decoration: line-through;
+  color: #2e7d32;
+  cursor: default;
+}
+
+.milestone-info-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.milestone-title-kanban {
+  font-weight: 600;
+  color: #2a2a2a;
+}
+
+.milestone-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.priority {
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+
+.priority.low { background: #26a69a; }
+.priority.medium { background: #ffa000; }
+.priority.high { background: #e53935; }
+
+.status {
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+}
+.status.on-track { background: #29b6f6; }
+.status.at-risk { background: #ffa000; }
+.status.off-track { background: #e53935; }
+
+
+.milestone-info-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: #555;
+}
+
+.assignee-initials {
+  width: 30px;
+  height: 30px;
+  background: #b39ddb;
+  color: white;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.milestone-date {
+  font-size: 12px;
+  color: #616161;
+}
+
+/* Expand Button */
+.expand-btn {
+  margin-top: 12px;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #1a73e8;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.expand-btn:hover {
+  background: #1559c7;
+}
+
+
+/* Kanban Board Layout */
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+  padding: 10px;
+  background: #f1f3f4;
+  border-radius: 10px;
+}
+
+.kanban-column {
+  background: #ebedef;
+  padding: 10px;
+  border-radius: 8px;
+  min-height: 150px;
+}
+
+.kanban-column h5 {
+  text-align: center;
+  margin-bottom: 10px;
+  color: #1a237e;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.expanded-card {
+  grid-column: 1 / -1; /* Makes the card take full width when expanded */
+  transition: all 0.3s ease;
+}
+
+.goal-details-expanded {
+  margin-top: 20px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
+.milestone-item-kanban {
+  cursor: pointer;
+  background: white;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.milestone-item-kanban:active {
+  transform: scale(0.98);
+}
+
+/* ======================= */
+/* Submit Update Button */
+/* ======================= */
+.btn-submit-update {
+  background-color: #007bff; /* Professional blue */
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+}
+
+.btn-submit-update:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn-submit-update:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-submit-update:disabled {
+  background-color: #b0c4de; /* Light blue for disabled state */
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+/* Wrapper to center the button */
+.submit-update-wrapper {
+  display: flex;
+  justify-content: center; /* centers horizontally */
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+/* ======================= */
+/* Submit Update Button */
+/* ======================= */
+.btn-submit-update {
+  background-color: #007bff; /* Professional blue */
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 10px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-submit-update:hover {
+  background-color: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn-submit-update:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-submit-update:disabled {
+  background-color: #b0c4de; /* Light blue for disabled state */
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+
+/* Update Goal Note Section */
+.update-section {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-small-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.note-field-small {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  resize: vertical;
+  min-height: 40px;
+  max-height: 120px;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.note-field-small:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0,123,255,0.15);
+  outline: none;
+}
+

@@ -1,0 +1,20 @@
+{
+  "textClassifier": {
+    "trained": true,
+    "trainedAt": "2026-02-10T23:55:15.255Z",
+    "samplesUsed": 100,
+    "accuracy": 97
+  },
+  "emotionClassifier": {
+    "trained": true,
+    "trainedAt": "2026-02-10T23:55:15.307Z",
+    "samplesUsed": 100,
+    "accuracy": 85
+  },
+  "riskClassifier": {
+    "trained": true,
+    "trainedAt": "2026-02-10T23:55:15.445Z",
+    "samplesUsed": 48,
+    "accuracy": 77.1
+  }
+}

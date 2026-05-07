@@ -1,0 +1,31 @@
+{
+  "textRiskClassifier": {
+    "algorithm": "TF-IDF + Random Forest",
+    "trained": true,
+    "trainedAt": "2026-02-11T00:16:13.976161",
+    "samplesUsed": 90,
+    "accuracy": 100.0,
+    "cvAccuracy": 55.6,
+    "cvStd": 5.0
+  },
+  "emotionClassifier": {
+    "algorithm": "TF-IDF + SVM (RBF kernel)",
+    "trained": true,
+    "trainedAt": "2026-02-11T00:16:13.976161",
+    "samplesUsed": 90,
+    "accuracy": 100.0,
+    "cvAccuracy": 48.9,
+    "cvStd": 4.2
+  },
+  "riskFeatureClassifier": {
+    "algorithm": "Gradient Boosting Classifier",
+    "trained": true,
+    "trainedAt": "2026-02-11T00:16:13.977671",
+    "samplesUsed": 48,
+    "accuracy": 100.0,
+    "cvAccuracy": 91.8,
+    "cvStd": 4.1
+  },
+  "framework": "scikit-learn",
+  "pythonVersion": "3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]"
+}

@@ -1,0 +1,163 @@
+/* Global dark palette + portal overrides when html.dark (Tailwind class strategy) */
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #020617;
+}
+
+/* ---- Admin / NGO / Supervisor: shells ---- */
+html.dark .admin-dashboard,
+html.dark .ngo-dashboard,
+html.dark .supervisor-dashboard {
+  color: #e2e8f0;
+}
+
+html.dark .admin-dashboard aside.flex-shrink-0,
+html.dark .ngo-dashboard aside.flex-shrink-0,
+html.dark .supervisor-dashboard aside.flex-shrink-0 {
+  background-color: #0f172a !important;
+  border-right-color: #334155 !important;
+}
+
+html.dark .admin-dashboard aside nav button[class*='bg-blue-50'],
+html.dark .ngo-dashboard aside nav button[class*='bg-blue-50'],
+html.dark .supervisor-dashboard aside nav button[class*='bg-blue-50'] {
+  background-color: rgba(30, 58, 138, 0.45) !important;
+  color: #bfdbfe !important;
+}
+
+html.dark .admin-dashboard aside nav button[class*='bg-blue-50'] .text-blue-600,
+html.dark .ngo-dashboard aside nav button[class*='bg-blue-50'] .text-blue-600,
+html.dark .supervisor-dashboard aside nav button[class*='bg-blue-50'] .text-blue-600 {
+  color: #93c5fd !important;
+}
+
+html.dark .admin-dashboard aside nav a.text-blue-700,
+html.dark .ngo-dashboard aside nav a.text-blue-700,
+html.dark .supervisor-dashboard aside nav a.text-blue-700 {
+  background-color: rgba(30, 58, 138, 0.38) !important;
+  color: #93c5fd !important;
+}
+
+html.dark .admin-dashboard aside nav a.text-gray-500,
+html.dark .ngo-dashboard aside nav a.text-gray-500,
+html.dark .supervisor-dashboard aside nav a.text-gray-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .admin-dashboard aside nav a.text-gray-500:hover,
+html.dark .ngo-dashboard aside nav a.text-gray-500:hover,
+html.dark .supervisor-dashboard aside nav a.text-gray-500:hover {
+  color: #bfdbfe !important;
+  background-color: rgba(51, 65, 85, 0.55) !important;
+}
+
+/* Main content typography (override light-only rules in portal CSS files) */
+html.dark .admin-dashboard main .text-gray-700,
+html.dark .admin-dashboard main .text-gray-800,
+html.dark .admin-dashboard main .text-gray-900,
+html.dark .ngo-dashboard main .text-gray-700,
+html.dark .ngo-dashboard main .text-gray-800,
+html.dark .ngo-dashboard main .text-gray-900,
+html.dark .supervisor-dashboard main .text-gray-700,
+html.dark .supervisor-dashboard main .text-gray-800,
+html.dark .supervisor-dashboard main .text-gray-900 {
+  color: #f1f5f9 !important;
+}
+
+html.dark .admin-dashboard main .text-gray-500,
+html.dark .admin-dashboard main .text-gray-600,
+html.dark .ngo-dashboard main .text-gray-500,
+html.dark .ngo-dashboard main .text-gray-600,
+html.dark .supervisor-dashboard main .text-gray-500,
+html.dark .supervisor-dashboard main .text-gray-600 {
+  color: #94a3b8 !important;
+}
+
+html.dark .admin-dashboard .stats-card-label,
+html.dark .ngo-dashboard .stats-card-label {
+  color: #f1f5f9 !important;
+}
+
+html.dark .admin-dashboard .activity-text,
+html.dark .ngo-dashboard .activity-text {
+  color: #f1f5f9 !important;
+}
+
+html.dark .admin-dashboard .activity-time,
+html.dark .ngo-dashboard .activity-time {
+  color: #94a3b8 !important;
+}
+
+/* Typical cards & panels inside scrolled main areas */
+html.dark .admin-dashboard main section .rounded-xl.bg-white,
+html.dark .admin-dashboard main section .rounded-lg.bg-white,
+html.dark .admin-dashboard main section .bg-white:not(aside):not(button),
+html.dark .ngo-dashboard main section .rounded-xl.bg-white,
+html.dark .ngo-dashboard main section .rounded-lg.bg-white,
+html.dark .ngo-dashboard main section .bg-white:not(aside):not(button),
+html.dark .supervisor-dashboard main .rounded-xl.bg-white,
+html.dark .supervisor-dashboard main .rounded-lg.bg-white,
+html.dark .supervisor-dashboard main .bg-white:not(aside):not(button) {
+  background-color: rgb(30 41 59 / 0.92) !important;
+  color: #f1f5f9;
+  border-color: #475569 !important;
+}
+
+html.dark .admin-dashboard main section .bg-gray-50,
+html.dark .admin-dashboard main section .bg-gray-100,
+html.dark .ngo-dashboard main section .bg-gray-50,
+html.dark .ngo-dashboard main section .bg-gray-100,
+html.dark .supervisor-dashboard main .bg-gray-50,
+html.dark .supervisor-dashboard main .bg-gray-100 {
+  background-color: rgba(30, 41, 59, 0.75) !important;
+  color: #e2e8f0;
+  border-color: #475569 !important;
+}
+
+html.dark .admin-dashboard main section .border-gray-100,
+html.dark .admin-dashboard main section .border-gray-200,
+html.dark .ngo-dashboard main section .border-gray-100,
+html.dark .ngo-dashboard main section .border-gray-200,
+html.dark .supervisor-dashboard main .border-gray-100,
+html.dark .supervisor-dashboard main .border-gray-200 {
+  border-color: #475569 !important;
+}
+
+html.dark .admin-dashboard main section input,
+html.dark .admin-dashboard main section textarea,
+html.dark .admin-dashboard main section select,
+html.dark .ngo-dashboard main section input,
+html.dark .ngo-dashboard main section textarea,
+html.dark .ngo-dashboard main section select,
+html.dark .supervisor-dashboard main input,
+html.dark .supervisor-dashboard main textarea,
+html.dark .supervisor-dashboard main select {
+  background-color: rgb(15 23 42 / 0.9) !important;
+  color: #f1f5f9 !important;
+  border-color: #475569 !important;
+}
+
+html.dark .admin-dashboard main section input::placeholder,
+html.dark .admin-dashboard main section textarea::placeholder,
+html.dark .ngo-dashboard main section input::placeholder,
+html.dark .ngo-dashboard main section textarea::placeholder,
+html.dark .supervisor-dashboard main input::placeholder,
+html.dark .supervisor-dashboard main textarea::placeholder {
+  color: #64748b !important;
+}
+
+html.dark .admin-dashboard main section table thead,
+html.dark .ngo-dashboard main section table thead,
+html.dark .supervisor-dashboard main table thead {
+  background-color: rgba(15, 23, 42, 0.95) !important;
+}
+
+html.dark .admin-dashboard aside .border-gray-200,
+html.dark .ngo-dashboard aside .border-gray-200,
+html.dark .supervisor-dashboard aside .border-gray-200 {
+  border-color: #475569 !important;
+}

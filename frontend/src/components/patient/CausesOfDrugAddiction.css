@@ -1,0 +1,72 @@
+.causes-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: Inter, system-ui, sans-serif;
+  color: #1f2937;
+  background: #ffffff;
+}
+
+/* Hero Section */
+.causes-hero {
+  text-align: center;
+  padding: 40px 20px;
+  background: linear-gradient(135deg, #738bc1, #acdef5);
+  color: #fff;
+}
+.causes-hero h1 {
+  font-size: 2.2rem;
+  color:#010101;
+  margin-bottom: 12px;
+}
+.causes-hero p {
+  font-size: 1.1rem;
+  max-width: 800px;
+  margin: 0 auto;
+  color:#010101;
+}
+
+/* Content Section */
+.causes-content {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  color: #0c0c0c;
+}
+.causes-content h2 {
+  color: #010101;
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+.causes-content p {
+  color: #0d0d0d;
+  line-height: 1.6;
+}
+
+/* References */
+.causes-references {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #f9fafb;
+  border-left: 4px solid #2563eb;
+  border-radius: 8px;
+}
+.causes-references h2 {
+  margin-bottom: 12px;
+}
+.causes-references ul {
+  list-style-type: disc;
+  margin-left: 20px;
+  color: #020202;
+}
+.causes-references li {
+  margin-bottom: 6px;
+  color: #020202;
+}
+.hidden{
+    display: none;
+}

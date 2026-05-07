@@ -1,0 +1,16 @@
+.dashboard-selector {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.dashboard-card {
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-4px);
+}
+
+.dashboard-card:active {
+  transform: translateY(-2px);
+}

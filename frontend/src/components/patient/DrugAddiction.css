@@ -1,0 +1,254 @@
+/* ✅ White background */
+.drug-page-layout {
+  background-color: #ffffff;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===========================
+   HERO — full width, no crop
+   =========================== */
+
+/* Full-bleed section that spans the viewport width */
+.hero {
+  width: 100%;
+  max-width: 1100px; /* match your content width */
+  margin: 0 auto;
+  padding: 0;
+  background: none;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  overflow: hidden;
+}
+
+/* Image itself: full width and height */
+.hero-img {
+  display: block;
+  width: 100%;
+  height: 320px; /* or auto for responsive */
+  object-fit: cover;
+  object-position: center;
+}
+
+/* ===========================
+   ARTICLE HEADER
+   =========================== */
+.article-header {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.article-header h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #0c0c0c;
+}
+
+.intro-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #0c0c0c;
+}
+
+/* ===========================
+   VIDEO SECTION
+   =========================== */
+.unique-video-section {
+  text-align: center;
+  margin: 40px 0;
+}
+
+.unique-video-container {
+  position: relative;
+}
+
+.unique-video-player {
+  position: relative;
+  z-index: 1;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.unique-text-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  pointer-events: none;
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  text-shadow:
+    0 0 8px rgba(255,255,255,0.9),
+    0 0 12px rgba(255,255,255,0.7),
+    2px 2px 6px rgba(0,0,0,0.6);
+}
+
+.unique-fade-text {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2rem;
+  line-height: 2.5rem;
+  font-weight: 600;
+  color: #181010;
+  text-shadow:
+    0 0 8px rgba(255,255,255,0.9),
+    0 0 12px rgba(255,255,255,0.7),
+    2px 2px 6px rgba(0,0,0,0.6);
+  opacity: 0;
+  animation: fadeInOut 10s infinite;
+}
+
+.unique-fade-text:nth-child(1) { animation-delay: 0s; }
+.unique-fade-text:nth-child(2) { animation-delay: 2s; }
+.unique-fade-text:nth-child(3) { animation-delay: 4s; }
+.unique-fade-text:nth-child(4) { animation-delay: 6s; }
+.unique-fade-text:nth-child(5) { animation-delay: 8s; }
+
+@keyframes fadeInOut {
+  0%, 20% { opacity: 0; }
+  25%, 45% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ===========================
+   CONTENT LAYOUT
+   =========================== */
+.content-wrapper {
+  display: flex;
+  justify-content: center;
+  /* constrain to dashboard content width so hero and article align */
+  max-width: 1100px;
+  margin: 20px auto;
+  gap: 15px;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.hero {
+  width: 100%;
+  max-width: 1100px; /* match content wrapper */
+  margin: 0 auto 24px; /* center and give small spacing below */
+  padding: 0;
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+/* Image itself: full width and responsive height */
+.hero-img {
+  display: block;
+  width: 100%;
+  height: 320px; /* tuned for dashboard embedding */
+  object-fit: cover;
+  object-position: center;
+}
+
+
+.highlight-box {
+  background: #e0f2fe;
+  border-left: 6px solid #2563eb;
+  padding: 20px;
+  margin: 30px 0;
+  border-radius: 8px;
+}
+
+.sidebar {
+  flex: 1;
+  position: sticky;
+  top: 20px;
+  height: fit-content;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.sidebar h3 {
+  margin-bottom: 15px;
+  font-size: 1.4rem;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar li {
+  margin: 10px 0;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: #2563eb;
+  font-weight: 500;
+}
+
+.sidebar a:hover {
+  text-decoration: underline;
+}
+
+.cta-box {
+  margin-top: 30px;
+  padding: 15px;
+  background: #fef3c7;
+  border-left: 6px solid #f59e0b;
+  border-radius: 8px;
+}
+
+/* ===========================
+   DETAILED SECTIONS
+   =========================== */
+.detailed-sections {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 60px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.detail-row.reverse {
+  flex-direction: row-reverse;
+}
+
+.detail-img {
+  flex: 1;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.detail-text {
+  flex: 1;
+}
+
+.detail-text h2 {
+  font-size: 1.9rem;
+  color: #0c0c0c;
+  margin-bottom: 16px;
+}
+
+.detail-text p {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #0c0c0c;
+}
+
+

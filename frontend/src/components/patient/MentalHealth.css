@@ -1,0 +1,108 @@
+/* Layout */
+.damh-layout {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  background: #fff;
+  color: #333;
+}
+
+/* Hero Section */
+.damh-hero {
+  position: relative;
+  color: #fff;
+  text-align: center;
+  padding: 6rem 2rem;
+  background: linear-gradient(135deg, #91cbf2, #e4eef3);
+}
+
+.damh-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(249, 247, 247, 0.5); /* Overlay */
+}
+
+.damh-hero h1,
+.damh-hero p {
+  position: relative;
+  z-index: 1;
+  color: #02070b;
+  
+}
+
+/* Sections */
+.damh-section {
+  padding: 3rem 2rem;
+  max-width: 900px;
+  margin: 0 auto;
+  color: #0c0c0c;
+}
+
+.damh-section.alt {
+  background: #ebebf2;
+}
+
+.damh-section h2 {
+  margin-bottom: 1rem;
+  color: #0c0c0c;
+}
+
+.damh-section p {
+  margin-bottom: 1rem;
+  color: #0c0c0c;
+}
+
+.damh-section ul {
+  margin: 1rem 0 1.5rem 1.5rem;
+  list-style: disc;
+}
+/* Two-column layout */
+.damh-content {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #0c0c0c;
+  padding: 3rem 2rem;
+}
+
+/* Article (main content) */
+.damh-article {
+  background: #fff;
+}
+
+/* Sidebar */
+.damh-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.sidebar-box {
+  background: #f5f7fa;
+  border-left: 4px solid #0056a3;
+  padding: 1rem;
+  border-radius: 6px;
+}
+
+.sidebar-box h3 {
+  margin-bottom: 0.5rem;
+  color: #0c0c0c;
+  font-size: 1.2rem;
+}
+
+.sidebar-box ul {
+  margin: 0.5rem 0 0 1.2rem;
+  list-style: disc;
+}
+
+.sidebar-box.emergency {
+  background: #ffecec;
+  border-left-color: #d9534f;
+  color: #a94442;
+  font-weight: bold;
+}
+.hidden-section {
+  display: none;
+}

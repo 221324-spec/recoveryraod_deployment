@@ -1,0 +1,114 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #cce0f5, #e5f9f5);
+  margin: 0;
+  padding: 0;
+}
+
+.wheel-container {
+  text-align: center;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  color: #003366;
+  margin-bottom: 2rem;
+}
+
+/* Wrapper for wheel and pointer */
+.wheel-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Pointer on the TOP (triangle pointing down) */
+.wheel-pointer {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -30px;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 20px solid #302ae1;
+  z-index: 10;
+}
+
+
+.wheel {
+  position: relative;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+  margin: 0 auto 2rem;
+  border: 10px solid #004080;
+  background: #f0f8ff;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0, 0, 50, 0.2);
+}
+
+.wheel-segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  left: 50%;
+  top: 50%;
+  transform-origin: 0% 0%;
+  background: rgba(0, 128, 255, 0.1);
+  border-right: 2px solid #003366;
+  border-top: 2px solid #003366;
+}
+
+.segment-label {
+  position: absolute;
+  left: 60%;
+  top: 20px;
+  transform-origin: 0% 0%;
+  font-size: 14px;
+  color: #003366;
+  font-weight: bold;
+}
+
+.spin-button {
+  display: block; /* ensures it sits beneath and centered */
+  margin: 1rem auto 0; /* centers it beneath the wheel */
+  padding: 12px 24px;
+  font-size: 18px;
+  background-color: #004080;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.spin-button:hover {
+  background-color: #0066cc;
+}
+
+.result-box {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ✅ Pointer in center, pointing up */
+.wheel-pointer {
+  position: absolute;
+  top: -20px; /* adjust to sit above wheel center */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 30px solid rgb(38, 31, 186); /* arrow pointer */
+  z-index: 10;
+}
