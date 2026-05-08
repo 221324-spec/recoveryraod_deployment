@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import PrivateRoute from './pages/PrivateRoute';
 import { VideoCallProvider } from './context/VideoCallContext';
 import { IncomingCallModal, VideoCallScreen } from './components/VideoCall';
+import ErrorBoundary from './components/ErrorBoundary';
 import './App.css';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
@@ -33,19 +34,21 @@ function App() {
 
       <Router>
         <div className="App">
-          <Suspense fallback={<RouteFallback />}>
-            <Routes>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/choose-role" element={<ChooseRolePage />} />
-              <Route path="/dashboard" element={<PrivateRoute allowedRoles={portalRoles}><DashboardSelector /></PrivateRoute>} />
-              <Route path="/admin/dashboard" element={<PrivateRoute allowedRoles={['admin']}><AdminDashboard /></PrivateRoute>} />
-              <Route path="/supervisor/dashboard" element={<PrivateRoute allowedRoles={['supervisor']}><SupervisorDashboard /></PrivateRoute>} />
-              <Route path="/patient/dashboard" element={<PrivateRoute allowedRoles={['patient']}><PatientDashboard /></PrivateRoute>} />
-              <Route path="/ngo/dashboard" element={<PrivateRoute allowedRoles={['ngo']}><NgoDashboard /></PrivateRoute>} />
-            </Routes>
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={<RouteFallback />}>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/choose-role" element={<ChooseRolePage />} />
+                <Route path="/dashboard" element={<PrivateRoute allowedRoles={portalRoles}><DashboardSelector /></PrivateRoute>} />
+                <Route path="/admin/dashboard" element={<PrivateRoute allowedRoles={['admin']}><AdminDashboard /></PrivateRoute>} />
+                <Route path="/supervisor/dashboard" element={<PrivateRoute allowedRoles={['supervisor']}><SupervisorDashboard /></PrivateRoute>} />
+                <Route path="/patient/dashboard" element={<PrivateRoute allowedRoles={['patient']}><PatientDashboard /></PrivateRoute>} />
+                <Route path="/ngo/dashboard" element={<PrivateRoute allowedRoles={['ngo']}><NgoDashboard /></PrivateRoute>} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
         </div>
       </Router>
     </VideoCallProvider>

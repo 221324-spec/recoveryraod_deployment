@@ -10,9 +10,32 @@
  */
 
 export function getApiOrigin() {
-  const v = import.meta.env.VITE_API_ORIGIN;
-  if (v == null || String(v).trim() === '') return '';
-  return String(v).replace(/\/$/, '');
+  const raw =
+    import.meta.env.VITE_API_ORIGIN ||
+    import.meta.env.VITE_API_URL ||
+    import.meta.env.VITE_BACKEND_ORIGIN ||
+    import.meta.env.VITE_BACKEND_URL;
+
+  if (raw == null || String(raw).trim() === '') return '';
+
+  let v = String(raw).trim();
+  v = v.replace(/\/$/, '');
+  // Common misconfiguration: users paste the full API base (ending in /api).
+  // This app expects an origin (scheme + host) and adds /api internally.
+  if (v.endsWith('/api')) v = v.slice(0, -'/api'.length);
+  return v;
+}
+
+let didWarnMissingApiOrigin = false;
+
+function warnMissingApiOriginOnce() {
+  if (didWarnMissingApiOrigin) return;
+  didWarnMissingApiOrigin = true;
+  // eslint-disable-next-line no-console
+  console.warn(
+    '[RecoveryRoad] API origin not configured. Set VITE_API_ORIGIN (Vercel env) to your Render backend origin (e.g. https://your-api.onrender.com). '
+      + 'Without it, the app will call /api/* on the current origin.'
+  );
 }
 
 /** @param {string} path Must be an API path, e.g. /api/patients/1 */
@@ -30,14 +53,20 @@ export function apiFetch(path, init) {
 
 export function getAxiosBaseURL() {
   const o = getApiOrigin();
-  if (!o) return '/api';
+  if (!o) {
+    if (import.meta.env.PROD) warnMissingApiOriginOnce();
+    return '/api';
+  }
   return `${o}/api`;
 }
 
 export function getSocketUrl() {
   const explicit = import.meta.env.VITE_SOCKET_URL;
   if (explicit != null && String(explicit).trim() !== '') {
-    return String(explicit).replace(/\/$/, '');
+    let v = String(explicit).trim();
+    v = v.replace(/\/$/, '');
+    if (v.endsWith('/api')) v = v.slice(0, -'/api'.length);
+    return v;
   }
   const o = getApiOrigin();
   if (o) return o;
