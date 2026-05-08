@@ -60,6 +60,7 @@ Recovery_Road-irfanswork/
 ├── frontend/          # Vite + React SPA
 ├── backend/           # Express API, Socket.IO, business logic
 ├── backend/ml_service/# Flask ML API (optional)
+├── DEPLOYMENT.md      # Vercel + Render (and related) deployment steps
 └── README.md
 ```
 
@@ -127,6 +128,7 @@ python backend/ml_service/app.py
 - Set `NODE_ENV=production` and configure **CORS** using `FRONTEND_URL` and/or `ALLOWED_ORIGINS`.  
 - Build the front end (`npm run build` in `frontend/`), then either host the `dist` on a static host or enable `SERVE_FRONTEND` + `FRONTEND_DIST_PATH` on the API server (see env table).  
 - Use strong secrets and a managed MongoDB instance; never commit real `.env` files.  
+- **Deploying the frontend on Vercel and the API on Render:** step-by-step instructions are in [DEPLOYMENT.md](./DEPLOYMENT.md).  
 
 ---
 
