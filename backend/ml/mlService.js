@@ -17,6 +17,7 @@
  */
 
 const http = require('http');
+const https = require('https');
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://127.0.0.1:5001';
 let _pythonServiceReady = false;
@@ -29,34 +30,59 @@ let _jsFallback = null;
 //  HTTP CLIENT HELPER
 // ══════════════════════════════════════════════════════════════════════════════
 
-function callPythonService(path, method = 'GET', body = null) {
+function callPythonService(path, method = 'GET', body = null, redirectsLeft = 2) {
   return new Promise((resolve, reject) => {
     const url = new URL(path, ML_SERVICE_URL);
+    const isHttps = url.protocol === 'https:';
+    const lib = isHttps ? https : http;
+    const port = url.port ? Number(url.port) : (isHttps ? 443 : 80);
+    const reqBody = body ? JSON.stringify(body) : null;
+    const requestPath = `${url.pathname}${url.search || ''}`;
+
+    const headers = {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    };
+    if (reqBody) headers['Content-Length'] = Buffer.byteLength(reqBody);
+
     const options = {
       hostname: url.hostname,
-      port: url.port,
-      path: url.pathname,
+      port,
+      path: requestPath,
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       timeout: 5000,
     };
 
-    const req = http.request(options, (res) => {
+    const req = lib.request(options, (res) => {
+      const sc = res.statusCode || 0;
+      const loc = res.headers?.location;
+      if ([301, 302, 307, 308].includes(sc) && loc && redirectsLeft > 0) {
+        res.resume();
+        return resolve(callPythonService(new URL(loc, url).toString(), method, body, redirectsLeft - 1));
+      }
+
       let data = '';
-      res.on('data', chunk => data += chunk);
+      res.on('data', (chunk) => (data += chunk));
       res.on('end', () => {
+        if (!data) return resolve({});
+
         try {
           resolve(JSON.parse(data));
-        } catch (e) {
-          reject(new Error(`Invalid JSON from ML service: ${data.slice(0, 200)}`));
+        } catch {
+          const snippet = String(data).slice(0, 200);
+          reject(new Error(`Invalid JSON from ML service (HTTP ${sc}): ${snippet}`));
         }
       });
     });
 
     req.on('error', reject);
-    req.on('timeout', () => { req.destroy(); reject(new Error('ML service timeout')); });
+    req.on('timeout', () => {
+      req.destroy();
+      reject(new Error('ML service timeout'));
+    });
 
-    if (body) req.write(JSON.stringify(body));
+    if (reqBody) req.write(reqBody);
     req.end();
   });
 }

@@ -143,7 +143,7 @@ if __name__ == '__main__':
     else:
         print("⚠ Warning: Models could not be loaded!")
 
-    port = int(os.environ.get('ML_PORT', 5001))
+    port = int(os.environ.get('PORT') or os.environ.get('ML_PORT', 5001))
     print(f"\n🚀 ML Service running on http://localhost:{port}")
     print(f"📡 Endpoints: /api/ml/health, /api/ml/classify-text, /api/ml/predict-risk")
 
