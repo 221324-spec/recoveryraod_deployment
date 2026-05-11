@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
+const compression = require('compression');
 const morgan = require('morgan');
 const path = require('path');
 const fs = require('fs');
@@ -71,6 +72,7 @@ const chatAlertRoutes = require('./routes/chatAlerts');
 const aiMoodRoutes = require('./routes/aiMood');
 
 // Middleware
+app.use(compression());
 app.use(cors({
   origin: corsOriginOption,
   credentials: true

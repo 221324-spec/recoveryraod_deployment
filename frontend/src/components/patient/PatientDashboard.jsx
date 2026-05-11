@@ -234,29 +234,24 @@ export default function PatientDashboard() {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        setLoading(true);
+        // Only show loading spinner on the very first load
+        // Background refreshes (after mood/activity entries) update silently
+        const isInitialLoad = !dashboardData;
+        if (isInitialLoad) setLoading(true);
+
         const authToken = token || localStorage.getItem('token');
         let response = await apiFetch('/api/dashboard', {
           headers: {
             'Authorization': `Bearer ${authToken}`
           }
         });
-        if (!response.ok) {
-          console.warn('Relative fetch failed, trying direct backend:', response.status);
-          try {
-            response = await apiFetch('/api/dashboard', {
-              headers: {
-                'Authorization': `Bearer ${authToken}`
-              }
-            });
-          } catch (e) {
-            // keep original response if fallback fails
-          }
-        }
 
         if (!response || !response.ok) {
-          const statusInfo = response ? `${response.status} ${response.statusText}` : 'no-response';
-          throw new Error(`Failed to fetch dashboard data (${statusInfo})`);
+          if (isInitialLoad) {
+            const statusInfo = response ? `${response.status} ${response.statusText}` : 'no-response';
+            throw new Error(`Failed to fetch dashboard data (${statusInfo})`);
+          }
+          return; // silently ignore background refresh failures
         }
 
         const data = await response.json();
@@ -292,7 +287,7 @@ export default function PatientDashboard() {
         }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
-        setError(error.message);
+        if (!dashboardData) setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -357,11 +352,28 @@ export default function PatientDashboard() {
         patchSupervisorGoals();
       };
 
+      // Real-time stats update — updates the 3 mini stats cards instantly
+      const handleDashboardStats = (stats) => {
+        console.log('patient: dashboard:stats', stats);
+        setDashboardData((prev) =>
+          prev ? { ...prev, stats: { ...prev.stats, ...stats } } : prev
+        );
+      };
+
+      // When mood/activity/trigger is logged, silently refresh dashboard data
+      const handleDataLogged = () => {
+        setRefreshTrigger((prev) => prev + 1);
+      };
+
       socketService.on('message:new', handleMessageNew);
       socketService.on('appointment:update', handleAppointmentUpdate);
       socketService.on('goal:created', handleGoalCreated);
       socketService.on('goal:progress:updated', handleGoalProgress);
       socketService.on('goal:deleted', handleGoalDeleted);
+      socketService.on('dashboard:stats', handleDashboardStats);
+      socketService.on('mood:logged', handleDataLogged);
+      socketService.on('activity:logged', handleDataLogged);
+      socketService.on('trigger:logged', handleDataLogged);
 
       return () => {
         socketService.off('message:new', handleMessageNew);
@@ -369,6 +381,10 @@ export default function PatientDashboard() {
         socketService.off('goal:created', handleGoalCreated);
         socketService.off('goal:progress:updated', handleGoalProgress);
         socketService.off('goal:deleted', handleGoalDeleted);
+        socketService.off('dashboard:stats', handleDashboardStats);
+        socketService.off('mood:logged', handleDataLogged);
+        socketService.off('activity:logged', handleDataLogged);
+        socketService.off('trigger:logged', handleDataLogged);
       };
     } catch (e) {
       console.error('Patient socket setup error', e);

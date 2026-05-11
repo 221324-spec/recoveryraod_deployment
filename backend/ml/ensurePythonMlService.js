@@ -130,7 +130,7 @@ async function ensurePythonMlService() {
   const pythonExe = process.env.ML_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
   const isPyLauncher = /^py(\.exe)?$/i.test(path.basename(pythonExe));
   const spawnArgs = isPyLauncher ? ['-3', appPy] : [appPy];
-  const env = { ...process.env, ML_PORT: String(port) };
+  const env = { ...process.env, ML_PORT: String(port), PYTHONIOENCODING: 'utf-8', PYTHONUTF8: '1' };
 
   console.log(`[ml-service] Starting ${pythonExe} → port ${port} (cwd: ${mlDir})`);
 

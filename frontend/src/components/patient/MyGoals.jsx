@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import socketService from '../../services/socketService';
 import { apiFetch } from '../../config/env';
+import { jsPDF } from "jspdf";
 import "./MyGoals.css";
 
 export default function MyGoals({ userId, onBack }) {
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const [goals, setGoals] = useState([]);
   const [note, setNote] = useState({});
   const [message, setMessage] = useState("");
@@ -14,6 +15,40 @@ export default function MyGoals({ userId, onBack }) {
   const [loadingId, setLoadingId] = useState(null);
   const [expandedGoals, setExpandedGoals] = useState({});
   const [historyExpanded, setHistoryExpanded] = useState({});
+
+  const mapGoalForUI = (g) => ({
+    ...g,
+    milestones: (g.milestones || []).map((m) => ({
+      ...m,
+      status: m.completed ? "Done" : "To Do",
+    })),
+  });
+
+  const attachProgressHistory = async (mappedGoals, authToken) => {
+    // Fetch progress history per goal so progress notes persist across reloads.
+    const withHistory = await Promise.all(
+      mappedGoals.map(async (g) => {
+        try {
+          const res = await apiFetch(`/api/goal-progress/${g._id}`,
+            {
+              headers: { Authorization: `Bearer ${authToken}` },
+            }
+          );
+          if (!res.ok) return { ...g, progressHistory: g.progressHistory || [] };
+          const history = await res.json();
+          const normalized = (history || []).map((h) => ({
+            ...h,
+            date: h.createdAt || h.date,
+          }));
+          return { ...g, progressHistory: normalized };
+        } catch (e) {
+          console.error('Error fetching goal progress history:', e);
+          return { ...g, progressHistory: g.progressHistory || [] };
+        }
+      })
+    );
+    return withHistory;
+  };
 
   // Fetch goals and map backend milestones to frontend status
   useEffect(() => {
@@ -26,38 +61,32 @@ export default function MyGoals({ userId, onBack }) {
     
     console.log('Fetching goals with token:', token ? 'present' : 'missing');
     
-    apiFetch(`/api/goals/my`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => {
+    const fetchGoals = async () => {
+      try {
+        const res = await apiFetch(`/api/goals/my`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         console.log('Goals API response status:', res.status);
         if (!res.ok) {
           throw new Error(`HTTP error! status: ${res.status}`);
         }
-        return res.json();
-      })
-      .then((data) => {
+        const data = await res.json();
         console.log('Goals API response data:', data);
-        // Handle both array response and object with goals property
         const goalsArray = Array.isArray(data) ? data : (data.goals || []);
-        const mappedGoals = goalsArray.map((g) => ({
-          ...g,
-          milestones: (g.milestones || []).map((m) => ({
-            ...m,
-            status: m.completed ? "Done" : "To Do",
-          })),
-        }));
-        console.log('Mapped goals:', mappedGoals.length, 'goals');
-        setGoals(mappedGoals);
-      })
-      .catch(err => {
+        const mappedGoals = goalsArray.map(mapGoalForUI);
+        const enriched = await attachProgressHistory(mappedGoals, token);
+        console.log('Mapped goals:', enriched.length, 'goals');
+        setGoals(enriched);
+      } catch (err) {
         console.error('Error fetching goals:', err);
         setMessage('Failed to load goals: ' + err.message);
         setMessageType('error');
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchGoals();
   }, [token]);
 
   // Real-time goal updates
@@ -81,22 +110,20 @@ export default function MyGoals({ userId, onBack }) {
     const handleGoalUpdated = (data) => {
       console.log('Patient goal updated:', data);
       // Refresh goals or update specific goal
-      apiFetch(`/api/goals/my`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((res) => res.json())
-        .then((data) => {
+      (async () => {
+        try {
+          const res = await apiFetch(`/api/goals/my`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          const data = await res.json();
           const goalsArray = Array.isArray(data) ? data : (data.goals || []);
-          const mappedGoals = goalsArray.map((g) => ({
-            ...g,
-            milestones: (g.milestones || []).map((m) => ({
-              ...m,
-              status: m.completed ? "Done" : "To Do",
-            })),
-          }));
-          setGoals(mappedGoals);
-        })
-        .catch(console.error);
+          const mappedGoals = goalsArray.map(mapGoalForUI);
+          const enriched = await attachProgressHistory(mappedGoals, token);
+          setGoals(enriched);
+        } catch (e) {
+          console.error(e);
+        }
+      })();
     };
 
     const handleGoalProgressUpdated = (data) => {
@@ -137,42 +164,88 @@ export default function MyGoals({ userId, onBack }) {
   const toggleHistoryExpand = (id) =>
     setHistoryExpanded((prev) => ({ ...prev, [id]: !prev[id] }));
 
-  // Persist milestone status
-  const updateMilestoneStatus = async (goalId, milestoneId, currentStatus) => {
-    let nextStatus = "To Do";
-    if (currentStatus === "To Do") nextStatus = "Doing";
-    else if (currentStatus === "Doing") nextStatus = "Done";
-    else return;
+  // --- Certificate Generation ---
+  const generateCertificate = (goal) => {
+    const doc = new jsPDF({
+      orientation: "landscape",
+      unit: "mm",
+      format: "a4",
+    });
 
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    doc.setLineWidth(5);
+    doc.setDrawColor(44, 62, 80);
+    doc.rect(5, 5, pageWidth - 10, pageHeight - 10);
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(40);
+    doc.setTextColor(44, 62, 80);
+    doc.text("CERTIFICATE OF COMPLETION", pageWidth / 2, 50, { align: "center" });
+
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "normal");
+    doc.text("This is to certify that", pageWidth / 2, 70, { align: "center" });
+
+    doc.setFontSize(30);
+    doc.setFont("helvetica", "bolditalic");
+    doc.setTextColor(192, 57, 43);
+    doc.text(user?.name || "Valued Achiever", pageWidth / 2, 90, { align: "center" });
+
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(0, 0, 0);
+    doc.text("has successfully completed the goal:", pageWidth / 2, 110, { align: "center" });
+
+    doc.setFontSize(24);
+    doc.setFont("helvetica", "bold");
+    doc.text(`"${goal.title}"`, pageWidth / 2, 125, { align: "center" });
+
+    doc.setFontSize(14);
+    doc.text(`Category: ${goal.category}`, pageWidth / 2, 140, { align: "center" });
+    doc.text(`Completed on: ${new Date().toLocaleDateString()}`, pageWidth / 2, 150, { align: "center" });
+
+    doc.setLineWidth(0.5);
+    doc.line(60, 175, 120, 175);
+    doc.line(170, 175, 230, 175);
+    doc.setFontSize(10);
+    doc.text("Program Director", 90, 180, { align: "center" });
+    doc.text("Department Head", 200, 180, { align: "center" });
+
+    doc.save(`${goal.title.replace(/\s+/g, '_')}_Certificate.pdf`);
+  };
+
+  const toggleMilestone = async (goalId, index) => {
     try {
-      const res = await apiFetch(`/api/goal-progress/milestones/update-status`, {
-        method: "PUT",
+      const res = await apiFetch(`/api/goals/${goalId}/milestone`, {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ goalId, milestoneId, status: nextStatus }),
+        body: JSON.stringify({ index }),
       });
 
-      if (!res.ok) throw new Error("Failed to update milestone on server");
+      if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(txt || 'Failed to update milestone');
+      }
 
-      setGoals((prevGoals) =>
-        prevGoals.map((g) => {
-          if (g._id === goalId) {
-            return {
-              ...g,
-              milestones: g.milestones.map((m) =>
-                m._id === milestoneId ? { ...m, status: nextStatus } : m
-              ),
-            };
-          }
-          return g;
+      const updatedGoal = await res.json();
+
+      setGoals((prev) =>
+        prev.map((g) => {
+          if (g._id !== goalId) return g;
+          const mapped = mapGoalForUI(updatedGoal);
+          // Preserve loaded progress history in UI.
+          return { ...mapped, progressHistory: g.progressHistory || [] };
         })
       );
     } catch (err) {
       console.error(err);
-      setMessage("Error updating milestone: " + err.message);
-      setMessageType("error");
+      setMessage('Error updating milestone: ' + err.message);
+      setMessageType('error');
     }
   };
 
@@ -180,7 +253,7 @@ export default function MyGoals({ userId, onBack }) {
   const submitProgress = async (goalId) => {
     const currentGoal = goals.find((g) => g._id === goalId);
     const total = currentGoal.milestones.length;
-    const done = currentGoal.milestones.filter((m) => m.status === "Done").length;
+    const done = currentGoal.milestones.filter((m) => !!m.completed).length;
     const currentProgress = total ? Math.round((done / total) * 100) : 0;
     const currentNote = note[goalId] || "";
 
@@ -220,7 +293,7 @@ export default function MyGoals({ userId, onBack }) {
                   ...(g.progressHistory || []),
                   {
                     _id: data._id || Date.now(),
-                    date: new Date(),
+                    date: data.createdAt || new Date(),
                     progress: currentProgress,
                     note: currentNote,
                   },
@@ -262,14 +335,17 @@ export default function MyGoals({ userId, onBack }) {
       ) : (
         <div className="goals-grid">
           {goals.map((goal) => {
-            const totalMilestones = goal.milestones.length;
-            const doneMilestones = goal.milestones.filter((m) => m.status === "Done").length;
+            const totalMilestones = goal.milestones ? goal.milestones.length : 0;
+            const doneMilestones = goal.milestones
+              ? goal.milestones.filter((m) => !!m.completed).length
+              : 0;
             const currentProgress = totalMilestones
               ? Math.round((doneMilestones / totalMilestones) * 100)
               : 0;
 
             const overdue = goal.dueDate && new Date(goal.dueDate) < new Date();
             const isExpanded = expandedGoals[goal._id];
+            const isCompleted = currentProgress >= 100 && totalMilestones > 0;
 
             return (
               <div
@@ -305,6 +381,29 @@ export default function MyGoals({ userId, onBack }) {
                   </div>
                 </div>
 
+                {/* Certificate Download Button - visible when goal is 100% complete */}
+                {isCompleted && (
+                  <div className="certificate-download-area" style={{ margin: "10px 0" }}>
+                    <button
+                      className="btn-certificate"
+                      onClick={() => generateCertificate(goal)}
+                      style={{
+                        backgroundColor: "#27ae60",
+                        color: "white",
+                        padding: "10px",
+                        border: "none",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        width: "100%",
+                        fontWeight: "bold",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                      }}
+                    >
+                      🏆 Claim Your Certificate
+                    </button>
+                  </div>
+                )}
+
                 <button
                   className="expand-btn"
                   onClick={() => toggleGoalExpand(goal._id)}
@@ -329,70 +428,39 @@ export default function MyGoals({ userId, onBack }) {
                       ></textarea>
                     </div>
 
-                    <div className="kanban-board">
-                      <div className="kanban-column">
-                        <h5>To Do</h5>
-                        {goal.milestones
-                          ?.filter((m) => m.status === "To Do")
-                          .map((m) => (
-                            <div
-                              key={m._id}
-                              className="milestone-item-kanban"
-                              onClick={() =>
-                                updateMilestoneStatus(goal._id, m._id, "To Do")
-                              }
+                    {goal.milestones?.length > 0 && (
+                      <div className="mt-4">
+                        <h4 className="section-small-title">Milestones</h4>
+                        <div className="space-y-2">
+                          {goal.milestones.map((m, idx) => (
+                            <label
+                              key={m._id || idx}
+                              className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
                             >
-                              <span className="milestone-title-kanban">
-                                {m.title}
-                              </span>
-                              <div className="milestone-tags">
-                                <span className="priority low">Task</span>
+                              <input
+                                type="checkbox"
+                                checked={!!m.completed}
+                                onChange={() => toggleMilestone(goal._id, idx)}
+                                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <div className={`text-sm font-medium ${m.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                                  {m.title}
+                                </div>
+                                {m.completed && m.completedAt && (
+                                  <div className="text-xs text-gray-400 mt-0.5">
+                                    Completed {new Date(m.completedAt).toLocaleDateString()}
+                                  </div>
+                                )}
                               </div>
-                            </div>
+                              {m.completed && (
+                                <span className="text-xs text-green-600 font-semibold">✓ Done</span>
+                              )}
+                            </label>
                           ))}
+                        </div>
                       </div>
-
-                      <div className="kanban-column">
-                        <h5>Doing</h5>
-                        {goal.milestones
-                          ?.filter((m) => m.status === "Doing")
-                          .map((m) => (
-                            <div
-                              key={m._id}
-                              className="milestone-item-kanban"
-                              onClick={() =>
-                                updateMilestoneStatus(goal._id, m._id, "Doing")
-                              }
-                            >
-                              <span className="milestone-title-kanban">
-                                {m.title}
-                              </span>
-                              <div className="milestone-tags">
-                                <span className="status on-track">Doing</span>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-
-                      <div className="kanban-column">
-                        <h5>Done</h5>
-                        {goal.milestones
-                          ?.filter((m) => m.status === "Done")
-                          .map((m) => (
-                            <div
-                              key={m._id}
-                              className="milestone-item-kanban done"
-                            >
-                              <span className="milestone-title-kanban">
-                                {m.title}
-                              </span>
-                              <div className="milestone-tags">
-                                <span className="status on-track">Done</span>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
+                    )}
 
                     {/* Submit Update Button */}
                     <div className="submit-update-wrapper">

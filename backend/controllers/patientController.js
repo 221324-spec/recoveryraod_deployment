@@ -51,8 +51,10 @@ exports.postMood = async (req, res) => {
     try {
       const patient = await User.findById(patientId).select('assignedSupervisor name');
       const stats = await exports.getMoodStatsInternal(patientId);
+      // mood:logged triggers the dashboard stats card refresh on the frontend
+      realtime.emitToUser(patientId, 'mood:logged', { moodEntry, stats, generatedAt: new Date() });
       realtime.emitToUser(patientId, 'mood:created', { moodEntry, generatedAt: new Date() });
-      realtime.emitToUser(patientId, 'dashboard:stats', { stats, generatedAt: new Date() });
+      realtime.emitToUser(patientId, 'dashboard:stats', { ...stats, todayMood: moodEntry.moodValue });
       if (patient && patient.assignedSupervisor) {
         realtime.emitToUser(patient.assignedSupervisor.toString(), 'patient:mood:created', { patientId, moodEntry, generatedAt: new Date() });
         realtime.emitToUser(patient.assignedSupervisor.toString(), 'dashboard:stats:update', { patientId, stats, generatedAt: new Date() });
@@ -242,6 +244,8 @@ exports.postTrigger = async (req, res) => {
     });
     await entry.save();
     try {
+      // trigger:logged triggers dashboard stats card refresh on the frontend
+      realtime.emitToUser(patientId, 'trigger:logged', { entry, generatedAt: new Date() });
       realtime.emitToUser(patientId, 'trigger:created', { entry, generatedAt: new Date() });
       const patient = await User.findById(patientId).select('assignedSupervisor name');
       if (patient && patient.assignedSupervisor) {
@@ -358,6 +362,8 @@ exports.postActivity = async (req, res) => {
       // If completed, update user points and emit update
       if (validStatus === 'completed' && validPoints > 0) {
         const updated = await User.findByIdAndUpdate(patientId, { $inc: { recoveryPoints: validPoints } }, { new: true }).select('recoveryPoints assignedSupervisor');
+        // activity:logged triggers dashboard stats card refresh on the frontend
+        realtime.emitToUser(patientId, 'activity:logged', { activity: act, generatedAt: new Date() });
         realtime.emitToUser(patientId, 'activity:created', { activity: act, generatedAt: new Date() });
         realtime.emitToUser(patientId, 'user:updated', { userId: patientId, recoveryPoints: updated.recoveryPoints, generatedAt: new Date() });
         if (updated && updated.assignedSupervisor) {
@@ -365,6 +371,7 @@ exports.postActivity = async (req, res) => {
           realtime.emitToUser(updated.assignedSupervisor.toString(), 'patient:updated', { patientId, recoveryPoints: updated.recoveryPoints, generatedAt: new Date() });
         }
       } else {
+        realtime.emitToUser(patientId, 'activity:logged', { activity: act, generatedAt: new Date() });
         realtime.emitToUser(patientId, 'activity:created', { activity: act, generatedAt: new Date() });
       }
       // Emit to admin dashboard for analytics

@@ -178,16 +178,18 @@ async function getPatientDashboard(user, dashboardData) {
   
   try {
     // Fetch REAL stats from database
-    const [moodEntries, triggerLogs, activities, upcomingAppts, unreadMsgs] = await Promise.all([
-      MoodEntry.find({ patient: userId }).sort({ createdAt: -1 }).limit(30),
-      TriggerLog.find({ patient: userId }).sort({ createdAt: -1 }).limit(30),
-      Activity.find({ patient: userId }).sort({ createdAt: -1 }).limit(30),
+    const [moodEntries, triggerLogs, activities, upcomingAppts, unreadMsgs, totalGoals, completedGoals] = await Promise.all([
+      MoodEntry.find({ patient: userId }).sort({ createdAt: -1 }).limit(30).lean(),
+      TriggerLog.find({ patient: userId }).sort({ createdAt: -1 }).limit(30).lean(),
+      Activity.find({ patient: userId }).sort({ createdAt: -1 }).limit(30).lean(),
       Appointment.countDocuments({ 
         patientId: userId, 
         date: { $gte: new Date() },
         status: { $ne: 'cancelled' }
       }),
-      Message.countDocuments({ receiverId: userId, read: false })
+      Message.countDocuments({ receiverId: userId, read: false }),
+      Goal.countDocuments({ user: userId }),
+      Goal.countDocuments({ user: userId, completed: true })
     ]);
     
     // Calculate real stats
@@ -231,7 +233,9 @@ async function getPatientDashboard(user, dashboardData) {
       totalCheckIns: moodEntries.length,
       avgMood: Math.round(avgMood * 10) / 10,
       triggersIdentified: triggerLogs.length,
-      todayMood: todayMoodEntry ? todayMoodEntry.moodValue : null
+      todayMood: todayMoodEntry ? todayMoodEntry.moodValue : null,
+      totalGoals,
+      completedGoals
     };
     
     console.log('✅ Real stats calculated:', dashboardData.stats);
@@ -337,7 +341,26 @@ async function getSupervisorDashboard(user, dashboardData) {
   const assignedPatients = await User.find({
     assignedSupervisor: userId,
     role: { $regex: /^patient$/i }
-  }).select('name email onlineStatus lastSeen recoveryPoints');
+  }).select('name email onlineStatus lastSeen recoveryPoints').lean();
+
+  const patientIds = assignedPatients.map(p => p._id);
+
+  // Bulk fetch latest mood per patient (instead of N+1 loop)
+  const [latestMoods, latestTriggers] = await Promise.all([
+    MoodEntry.aggregate([
+      { $match: { patient: { $in: patientIds } } },
+      { $sort: { createdAt: -1 } },
+      { $group: { _id: '$patient', moodValue: { $first: '$moodValue' }, createdAt: { $first: '$createdAt' } } }
+    ]),
+    TriggerLog.aggregate([
+      { $match: { patient: { $in: patientIds } } },
+      { $sort: { createdAt: -1 } },
+      { $group: { _id: '$patient', triggerType: { $first: '$triggers' }, createdAt: { $first: '$createdAt' } } }
+    ])
+  ]);
+
+  const moodMap = Object.fromEntries(latestMoods.map(m => [String(m._id), m]));
+  const triggerMap = Object.fromEntries(latestTriggers.map(t => [String(t._id), t]));
 
   dashboardData.stats = {
     assignedPatients: assignedPatients.length,
@@ -356,32 +379,26 @@ async function getSupervisorDashboard(user, dashboardData) {
     })
   };
 
-  // Recent patient activity
+  // Build recent activity from pre-fetched data (no more per-patient loops)
   const recentPatientActivity = [];
   for (const patient of assignedPatients.slice(0, 5)) {
-    const latestMood = await MoodEntry.findOne({ patient: patient._id })
-      .sort({ createdAt: -1 });
-
-    const latestTrigger = await TriggerLog.findOne({ patient: patient._id })
-      .sort({ createdAt: -1 });
-
-    if (latestMood) {
+    const pid = String(patient._id);
+    if (moodMap[pid]) {
       recentPatientActivity.push({
         type: 'patient_mood',
         title: `${patient.name} - Mood Update`,
-        description: `Mood: ${latestMood.moodValue}/10`,
-        timestamp: latestMood.createdAt,
-        patient: patient
+        description: `Mood: ${moodMap[pid].moodValue}/10`,
+        timestamp: moodMap[pid].createdAt,
+        patient
       });
     }
-
-    if (latestTrigger) {
+    if (triggerMap[pid]) {
       recentPatientActivity.push({
         type: 'patient_trigger',
         title: `${patient.name} - Trigger Logged`,
-        description: `Trigger: ${latestTrigger.triggerType}`,
-        timestamp: latestTrigger.createdAt,
-        patient: patient
+        description: `Trigger logged`,
+        timestamp: triggerMap[pid].createdAt,
+        patient
       });
     }
   }

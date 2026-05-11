@@ -97,21 +97,42 @@ function callPythonService(path, method = 'GET', body = null, redirectsLeft = 2)
  * Falls back to JS models if Python service is unavailable.
  */
 async function loadModels() {
-  try {
-    const health = await callPythonService('/api/ml/health');
-    if (health.status === 'ok' && health.modelsLoaded) {
-      _pythonServiceReady = true;
+  // Detect if we're connecting to a remote service (Render) or local.
+  // Local: Python is auto-started, should be ready in <30s → fewer, shorter retries.
+  // Remote (Render): cold-start takes 60-120s → more, longer retries.
+  const isRemote = (() => {
+    try {
+      const u = new URL(ML_SERVICE_URL);
+      return u.hostname !== '127.0.0.1' && u.hostname !== 'localhost';
+    } catch { return false; }
+  })();
 
-      const modelsResp = await callPythonService('/api/ml/models');
-      if (modelsResp.success) {
-        _modelMeta = modelsResp.models;
+  const maxAttempts = isRemote ? 12 : 6;
+  const retryDelayMs = isRemote ? 10000 : 5000;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      const health = await callPythonService('/api/ml/health');
+      if (health.status === 'ok' && health.modelsLoaded) {
+        _pythonServiceReady = true;
+
+        const modelsResp = await callPythonService('/api/ml/models');
+        if (modelsResp.success) {
+          _modelMeta = modelsResp.models;
+        }
+
+        console.log('  ✓ Python ML service connected (scikit-learn)');
+        return;
       }
-
-      console.log('  ✓ Python ML service connected (scikit-learn)');
-      return;
+    } catch (err) {
+      const isLastAttempt = attempt === maxAttempts;
+      if (isLastAttempt) {
+        console.log(`  ⚠ Python ML service not available after ${maxAttempts} attempts (${err.message})`);
+      } else {
+        console.log(`  ⏳ ML service not ready (attempt ${attempt}/${maxAttempts}): ${err.message} — retrying in ${retryDelayMs / 1000}s...`);
+        await new Promise((r) => setTimeout(r, retryDelayMs));
+      }
     }
-  } catch (err) {
-    console.log(`  ⚠ Python ML service not available (${err.message})`);
   }
 
   // Fallback: try loading JS natural models

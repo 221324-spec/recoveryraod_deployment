@@ -23,4 +23,9 @@ const GoalSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Indexes for performance
+GoalSchema.index({ user: 1, completed: 1 });
+GoalSchema.index({ supervisor: 1 });
+GoalSchema.index({ user: 1, supervisor: 1 });
+
 module.exports = mongoose.model('Goal', GoalSchema);

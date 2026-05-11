@@ -43,9 +43,23 @@ const PatientGoals = ({ selectedPatient }) => {
   useEffect(() => {
     const handleGoalProgress = (data) => {
       console.log('Goal progress updated:', data);
-      setGoals(prev => prev.map(g => 
-        g._id === data.goalId ? { ...g, progress: data.progress } : g
-      ));
+      setGoals(prev => prev.map(g => {
+        if (g._id !== data.goalId) return g;
+
+        const next = { ...g, progress: Number(data.progress) };
+
+        // If backend provides milestoneIndex/completed, update checkbox state too.
+        if (typeof data.milestoneIndex === 'number' && Array.isArray(g.milestones) && g.milestones[data.milestoneIndex]) {
+          const milestones = [...g.milestones];
+          milestones[data.milestoneIndex] = {
+            ...milestones[data.milestoneIndex],
+            completed: !!data.completed,
+          };
+          next.milestones = milestones;
+        }
+
+        return next;
+      }));
     };
 
     const handleGoalAssigned = (data) => {
@@ -115,80 +129,102 @@ const PatientGoals = ({ selectedPatient }) => {
         </div>
       ) : (
         <div className="space-y-4">
-          {goals.map((goal) => (
-            <div key={goal._id} className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
-              {/* Goal Header */}
-              <div className="flex justify-between items-start mb-3">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">{goal.title}</h3>
-                  <p className="text-sm text-gray-500">
-                    Patient: <span className="font-medium">{goal.user?.name || 'Unknown'}</span>
-                    {' • '}{goal.category} • {goal.goalType}
-                  </p>
-                </div>
-                <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  goal.progress === 100 ? 'bg-green-100 text-green-800' :
-                  goal.progress >= 50 ? 'bg-blue-100 text-blue-800' :
-                  goal.progress > 0 ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-gray-100 text-gray-800'
-                }`}>
-                  {goal.progress}% Complete
-                </div>
-              </div>
+          {goals.map((goal) => {
+            const totalMilestones = Array.isArray(goal.milestones) ? goal.milestones.length : 0;
+            const doneMilestones = totalMilestones
+              ? goal.milestones.filter((m) => !!m.completed).length
+              : 0;
 
-              {/* Progress Bar */}
-              <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-                <div 
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    goal.progress === 100 ? 'bg-green-500' :
-                    goal.progress >= 50 ? 'bg-blue-500' :
-                    'bg-yellow-500'
-                  }`}
-                  style={{ width: `${goal.progress}%` }}
-                ></div>
-              </div>
+            const rawProgress = totalMilestones
+              ? Math.round((doneMilestones / totalMilestones) * 100)
+              : Number(goal.progress);
 
-              {/* Description */}
-              {goal.description && (
-                <p className="text-gray-600 text-sm mb-4">{goal.description}</p>
-              )}
+            const progress = Math.max(0, Math.min(100, Number.isFinite(rawProgress) ? rawProgress : 0));
 
-              {/* Milestones */}
-              {goal.milestones?.length > 0 && (
-                <div className="mt-4">
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Milestones:</h4>
-                  <div className="space-y-2">
-                    {goal.milestones.map((ms, idx) => (
-                      <label 
-                        key={idx} 
-                        className="flex items-center p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={ms.completed || false}
-                          onChange={() => toggleMilestone(goal._id, idx)}
-                          className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                        />
-                        <span className={`ml-3 text-sm ${ms.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>
-                          {ms.title}
-                        </span>
-                        {ms.completed && (
-                          <span className="ml-auto text-xs text-green-600 font-medium">✓ Done</span>
-                        )}
-                      </label>
-                    ))}
+            return (
+              <div key={goal._id} className="border border-gray-200 rounded-lg p-5 hover:shadow-md transition-shadow">
+                {/* Goal Header */}
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">{goal.title}</h3>
+                    <p className="text-sm text-gray-500">
+                      Patient: <span className="font-medium">{goal.user?.name || 'Unknown'}</span>
+                      {' • '}{goal.category} • {goal.goalType}
+                    </p>
+                  </div>
+                  <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    progress === 100 ? 'bg-green-100 text-green-800' :
+                    progress >= 50 ? 'bg-blue-100 text-blue-800' :
+                    progress > 0 ? 'bg-yellow-100 text-yellow-800' :
+                    'bg-gray-100 text-gray-800'
+                  }`}>
+                    {progress}% Complete
                   </div>
                 </div>
-              )}
 
-              {/* Due Date */}
-              {goal.dueDate && (
-                <div className="mt-4 text-sm text-gray-500">
-                  Due: {new Date(goal.dueDate).toLocaleDateString()}
+                {/* Progress Bar */}
+                <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4 overflow-hidden">
+                  <div
+                    className={`h-2.5 rounded-full transition-all duration-300 ${
+                      progress === 100 ? 'bg-green-500' :
+                      progress >= 50 ? 'bg-blue-500' :
+                      'bg-yellow-500'
+                    }`}
+                    style={{
+                      width: progress === 100 ? '100%' : `${progress}%`,
+                      // Fallback in case utility classes are overridden/missed
+                      backgroundColor:
+                        progress === 100
+                          ? 'rgb(34 197 94)'
+                          : progress >= 50
+                            ? 'rgb(59 130 246)'
+                            : 'rgb(234 179 8)',
+                    }}
+                  ></div>
                 </div>
-              )}
-            </div>
-          ))}
+
+                {/* Description */}
+                {goal.description && (
+                  <p className="text-gray-600 text-sm mb-4">{goal.description}</p>
+                )}
+
+                {/* Milestones */}
+                {goal.milestones?.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">Milestones:</h4>
+                    <div className="space-y-2">
+                      {goal.milestones.map((ms, idx) => (
+                        <label
+                          key={idx}
+                          className="flex items-center p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={ms.completed || false}
+                            onChange={() => toggleMilestone(goal._id, idx)}
+                            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                          />
+                          <span className={`ml-3 text-sm ${ms.completed ? 'line-through text-gray-400' : 'text-gray-700'}`}>
+                            {ms.title}
+                          </span>
+                          {ms.completed && (
+                            <span className="ml-auto text-xs text-green-600 font-medium">✓ Done</span>
+                          )}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Due Date */}
+                {goal.dueDate && (
+                  <div className="mt-4 text-sm text-gray-500">
+                    Due: {new Date(goal.dueDate).toLocaleDateString()}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

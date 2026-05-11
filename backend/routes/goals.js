@@ -74,7 +74,7 @@ router.post('/', authenticate, async (req, res) => {
 router.get('/my', authenticate, async (req, res) => {
   try {
     const userId = req.user.userId;
-    const goals = await Goal.find({ user: userId }).populate('supervisor', 'name email');
+    const goals = await Goal.find({ user: userId }).populate('supervisor', 'name email').lean();
     res.json(goals);
   } catch (err) {
     console.error('GET /api/goals/my error:', err);
@@ -86,7 +86,7 @@ router.get('/my', authenticate, async (req, res) => {
 router.get('/supervisor', authenticate, async (req, res) => {
   try {
     const supId = req.user.userId;
-    const goals = await Goal.find({ supervisor: supId }).populate('user', 'name email');
+    const goals = await Goal.find({ supervisor: supId }).populate('user', 'name email').lean();
     res.json(goals);
   } catch (err) {
     console.error('GET /api/goals/supervisor error:', err);

@@ -15,6 +15,13 @@ Runs on port 5001, called by Node.js backend via HTTP.
 
 import os
 import sys
+import io
+
+# Force UTF-8 output on Windows (cp1252 cannot encode emoji/special chars)
+if sys.stdout and hasattr(sys.stdout, 'buffer'):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+if sys.stderr and hasattr(sys.stderr, 'buffer'):
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
 
 try:
     from flask import Flask, request, jsonify
@@ -133,18 +140,18 @@ if __name__ == '__main__':
 
     if is_ready():
         meta = get_model_meta()
-        print(f"\n🤖 Models ready:")
+        print("\n[OK] Models ready:")
         if 'textRiskClassifier' in meta:
-            print(f"   Text Risk   : {meta['textRiskClassifier']['algorithm']} — {meta['textRiskClassifier']['accuracy']}% acc")
+            print(f"   Text Risk   : {meta['textRiskClassifier']['algorithm']} -- {meta['textRiskClassifier']['accuracy']}% acc")
         if 'emotionClassifier' in meta:
-            print(f"   Emotion     : {meta['emotionClassifier']['algorithm']} — {meta['emotionClassifier']['accuracy']}% acc")
+            print(f"   Emotion     : {meta['emotionClassifier']['algorithm']} -- {meta['emotionClassifier']['accuracy']}% acc")
         if 'riskFeatureClassifier' in meta:
-            print(f"   Risk Feature: {meta['riskFeatureClassifier']['algorithm']} — {meta['riskFeatureClassifier']['accuracy']}% acc")
+            print(f"   Risk Feature: {meta['riskFeatureClassifier']['algorithm']} -- {meta['riskFeatureClassifier']['accuracy']}% acc")
     else:
-        print("⚠ Warning: Models could not be loaded!")
+        print("[WARN] Models could not be loaded!")
 
     port = int(os.environ.get('PORT') or os.environ.get('ML_PORT', 5001))
-    print(f"\n🚀 ML Service running on http://localhost:{port}")
-    print(f"📡 Endpoints: /api/ml/health, /api/ml/classify-text, /api/ml/predict-risk")
+    print(f"\n[START] ML Service running on http://localhost:{port}")
+    print("[INFO] Endpoints: /api/ml/health, /api/ml/classify-text, /api/ml/predict-risk")
 
     app.run(host='0.0.0.0', port=port, debug=False)
